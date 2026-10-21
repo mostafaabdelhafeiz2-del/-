@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة الألغاز التعليمية - موبايل وكمبيوتر</title>
+    <!-- تحميل بيئة بايثون للمتصفح -->
+    <link rel="stylesheet" href="https://pyscript.net/releases/2023.05.1/pyscript.css" />
+    <script defer src="https://pyscript.net/releases/2023.05.1/pyscript.js"></script>
+    <style>
+        body { background-color: #0f172a; color: white; font-family: 'Segoe UI', Tahoma, sans-serif; text-align: center; padding: 15px; margin: 0; display: flex; flex-direction: column; justify-content: center; min-height: 100vh; }
+        .card { background: #1e293b; width: 100%; max-width: 500px; margin: 0 auto; padding: 20px; border-radius: 16px; border: 2px solid #38bdf8; box-shadow: 0 10px 25px rgba(0,0,0,0.5); box-sizing: border-box; }
+        h1 { font-size: 1.5rem; color: #38bdf8; margin-bottom: 15px; }
+        #question { font-size: 1.1rem; margin-bottom: 20px; line-height: 1.6; color: #f8fafc; }
+        button { display: block; width: 100%; background: #0284c7; color: white; border: none; padding: 14px; margin: 10px 0; border-radius: 10px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: 0.2s; }
+        button:hover { background: #0369a1; }
+        #output { font-size: 1.1rem; margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>🧠 غرفة الألغاز التعليمية</h1>
+        <div id="question">جاري تحميل محرك بايثون للعمل على الموبايل والكمبيوتر...</div>
+        <div id="options"></div>
+        <div id="output"></div>
+    </div>
+
+    <!-- كود بايثون متوافق مع كافة الأجهزة -->
+    <py-script>
+from js import document
+
+class MobilePythonGame:
+    def __init__(self):
+        self.puzzles = [
+            {
+                "question": "ألغاز الرياضيات: ما هو حاصل ضرب 7 × 8؟",
+                "options": ["54", "56", "64"],
+                "correct": 1
+            },
+            {
+                "question": "ألغاز المنطق: التتابع 2, 4, 8, 16.. ما الرقم التالي؟",
+                "options": ["24", "30", "32"],
+                "correct": 2
+            },
+            {
+                "question": "ألغاز العلوم: ما هو الغاز الأساسي لتنفس الكائنات الحية؟",
+                "options": ["الأكسجين", "النيتروجين", "ثاني أكسيد الكربون"],
+                "correct": 0
+            }
+        ]
+        self.current_step = 0
+
+    def render(self):
+        if self.current_step < len(self.puzzles):
+            p = self.puzzles[self.current_step]
+            document.getElementById("question").innerText = f"اللغز ({self.current_step + 1}/3):\n{p['question']}"
+            
+            opts_html = ""
+            for idx, opt in enumerate(p["options"]):
+                opts_html += f'<button py-click="game.check_answer({idx})">{opt}</button>'
+            
+            document.getElementById("options").innerHTML = opts_html
+        else:
+            document.getElementById("question").innerText = "🎉 مبروك! لقد قمت بفك جميع الألغاز بنجاح والهروب من الغرفة!"
+            document.getElementById("options").innerHTML = '<button py-click="game.reset()">إعادة اللعب</button>'
+            document.getElementById("output").innerText = ""
+
+    def check_answer(self, choice):
+        p = self.puzzles[self.current_step]
+        if choice == p["correct"]:
+            document.getElementById("output").style.color = "#4ade80"
+            document.getElementById("output").innerText = "✅ إجابة صحيحة! أحسنت."
+            self.current_step += 1
+        else:
+            document.getElementById("output").style.color = "#f87171"
+            document.getElementById("output").innerText = "❌ إجابة خاطئة! حاول مرة أخرى بتركيز."
+        
+        self.render()
+
+    def reset(self):
+        self.current_step = 0
+        document.getElementById("output").innerText = ""
+        self.render()
+
+# تشغيل اللعبة
+game = MobilePythonGame()
+game.render()
+    </py-script>
+
+</body>
+</html>
